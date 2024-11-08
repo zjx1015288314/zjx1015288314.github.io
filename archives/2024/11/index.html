@@ -7,7 +7,7 @@
 
     
 
-    <title>Hello World | Hexo</title>
+    <title>Archives: 2024/11 | Hexo</title>
     <meta name="author" content="John Doe" />
     <meta name="keywords" content="" />
     <meta name="description" content="" />
@@ -68,7 +68,7 @@
                 <span class="nav-text">标签</span>
             </a>
         
-            <a class="nav-item" href="/archives">
+            <a class="nav-item active" href="/archives">
                 <span class="nav-text">归档</span>
             </a>
         
@@ -84,8 +84,6 @@
     <div id="aside-inner" class="aside-inner">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="https://zjx1015288314.github.io"></form>
 
-        
-        
         
         
 
@@ -128,65 +126,50 @@
 
         <div id="content" class="content">
             <div id="wrapper" class="wrapper" style="max-width: 800px">
-                <article class="article" itemscope itemprop="blogPost">
+                
+
+
     
-    <header class="article-header">
+    
+    
+    
+    
+    <section class="archives-wrap">
+    <div class="archive-year-wrap">
+    <a href="/archives/2024/11" class="page-hd">
+        2024/11
+    </a>
+    </div>
+    <ol class="archives">
+    
+
+    <li class="archive-section-item">
         
-        <h1 itemprop="name">
-            Hello World
-        </h1>
-        
-        <div class="article-meta clearfix">
-            <a class="article-date" href="https://zjx1015288314.github.io/2024/08/21/Hello-World-0/index.html">
+<article class="archive-article archive-type-post">
+    <div class="archive-article-inner">
+        <header class="archive-article-header">
+            <a class="archive-article-link" href="/2024/11/08/%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8BMap-%E5%88%9D%E5%A7%8B%E5%8C%96%E6%9A%B4%E9%9C%B2%E7%9A%84-NPE-%E9%97%AE%E9%A2%98/">并发场景下Map 初始化暴露的 NPE 问题</a>
+            <span class="archive-article-date">
+                (<a class="article-date" href="/archives/2024/11">
     
-    <i class="icon-calendar vm"></i>
-    
-    <time class="vm" datetime="2024-08-21T04:45:50.000Z" itemprop="datePublished">2024-08-21</time>
+    <time class="vm" datetime="2024-11-08T09:38:08.000Z" itemprop="datePublished">11/8</time>
 </a>
-
-            
-
-        </div>
-    </header>
-    
-    <section class="article-body markdown-body">
-        
-        
-        
-    </section>
+)
+            </span>
+        </header>
+    </div>
 </article>
+    </li>
 
 
+</ol></section>
 
-<div class="comments">
-    <div id="comments"></div>
-    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-    <script>
-    new Gitalk({
-        clientID: "Ov23licN8No8iOgMl3uv",
-        clientSecret: "f8b3f3790f4cf706c60377cb18307339207a00d3",
-        repo: "zjx1015288314.github.io",
-        owner: "zjx1015288314",
-        admin: ["zjx1015288314"],
-        id: "5d92ad8a5dad66914765e690e9c78b7a",
-        distractionFreeMode: true,
-        title: "Hello World",
-        body: "https://zjx1015288314.github.io/2024/08/21/Hello-World-0/",
-        labels: []
-    }).render('comments');
-    </script>
-</div>
 
 
 
             </div>
         </div>
 
-        
-            
-            <a id="pagenext" href="/2024/08/21/hello-world/" class="article-next" title="Hello World"><i class="icon-arrow-right"></i></a>
-            
-            
         
 
         <footer class="footer">
@@ -260,33 +243,6 @@
         });
     });
     </script>
-    
-        
-<script src="/js/scrollspy.min.js"></script>
-
-        <script type="text/javascript">
-        $(document.body).scrollspy({target: '#aside-inner'});
-
-        $(window).on('resize', function() {
-            var hw = $('#header').width();
-            var ww = $('#wrapper').width();
-            var space = ($(this).width() - hw - ww) / 2 / 2;
-
-            var pageprev = $('#pageprev');
-            var pagenext = $('#pagenext');
-            var avg = (pageprev.width() + pagenext.width()) / 2
-
-            if(space > avg) {
-                var len = space - avg / 2;
-                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
-                pageprev.css($.extend({left: hw + len}, styles));
-                pagenext.css($.extend({right: len}, styles));
-            } else {
-                pageprev.removeAttr('style');
-                pagenext.removeAttr('style');
-            }
-        }).trigger('resize');
-        </script>
     
 
 </body>

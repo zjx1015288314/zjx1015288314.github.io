@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+
+    
+
+    
+
+    <title>并发场景下Map 初始化暴露的 NPE 问题 | Hexo</title>
+    <meta name="author" content="John Doe" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="1. 问题定位昨天发现日志里有报空指针的异常，定位到代码位置如下：12345public void xxxTest(Type type) &amp;#123;    IDemoService demoService = demoBaseService.getDemoService(type);    // 该行报空指针!!!!!!!!    return demoService.fillXxxx();&amp;#125;DemoBaseService相关代码如下:123456789101112131415161" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+
+    
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/images/favicon.ico">
+    
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'icomoon';
+        src: url("/fonts/icomoon.eot?q628ml");
+        src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
+             url("/fonts/icomoon.ttf?q628ml") format('truetype'),
+             url("/fonts/icomoon.woff?q628ml") format('woff'),
+             url("/fonts/icomoon.svg?q628ml#icomoon") format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+    </style>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!--[if lt IE 9]><style type="text/css">.nav-inner {top:0;}.author-meta {position:static;top:0;}.search-form {height:36px;}</style><script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script><![endif]-->
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body>
+
+    <main class="app">
+        <header id="header" class="header clearfix">
+    <div id="nav" class="nav">
+    <div class="nav-mobile">
+        <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
+        <h1 class="nav-mobile-title nav-mobile-item">Hexo</h1>
+        <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
+    </div>
+
+    <nav id="nav-inner" class="nav-inner">
+        
+            <a class="nav-item" href="/">
+                <span class="nav-text">首页</span>
+            </a>
+        
+            <a class="nav-item" href="/categories/front-end">
+                <span class="nav-text">工具</span>
+            </a>
+        
+            <a class="nav-item" href="/categories/back-end">
+                <span class="nav-text">后端</span>
+            </a>
+        
+            <a class="nav-item" href="/tags">
+                <span class="nav-text">标签</span>
+            </a>
+        
+            <a class="nav-item" href="/archives">
+                <span class="nav-text">归档</span>
+            </a>
+        
+            <a class="nav-item" href="/about">
+                <span class="nav-text">关于</span>
+            </a>
+        
+    </nav>
+</div>
+
+    <aside id="aside" class="aside">
+    <div id="aside-mask" class="aside-mask"></div>
+    <div id="aside-inner" class="aside-inner">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="https://zjx1015288314.github.io"></form>
+
+        
+        
+        
+        
+
+        
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D"><span class="toc-number">1.</span> <span class="toc-text">1. 问题定位</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF"><span class="toc-number">2.</span> <span class="toc-text">2. 解决思路</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E5%80%9F%E5%8A%A9-Spring-%E8%87%AA%E5%B8%A6%E7%9A%84onApplicationEvent%E6%96%B9%E6%B3%95%EF%BC%8CSpring%E4%BA%8B%E4%BB%B6%E7%9B%91%E5%90%AC%E5%99%A8%E9%BB%98%E8%AE%A4%E6%98%AF%E5%8D%95%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%89%A7%E8%A1%8C%EF%BC%8C%E5%9C%A8onApplicationEvent%E6%96%B9%E6%B3%95%E9%87%8C%E6%89%A7%E8%A1%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E9%80%BB%E8%BE%91%E5%8D%B3%E5%8F%AF"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 借助 Spring 自带的onApplicationEvent方法，Spring事件监听器默认是单线程同步执行，在onApplicationEvent方法里执行初始化逻辑即可</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E5%9F%BA%E4%BA%8E-2-1-%E7%9A%84%E6%80%9D%E8%B7%AF%EF%BC%8C%E4%BD%BF%E7%94%A8-EventListener"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 基于 2.1 的思路，使用@EventListener</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-%E5%9F%BA%E4%BA%8E-2-1-%E7%9A%84Getter-lazy-true-%E6%B3%A8%E8%A7%A3"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 基于 2.1 的Getter(lazy&#x3D;true)注解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F-%E4%BD%BF%E7%94%A8%E5%8F%8C%E9%87%8D%E6%A3%80%E6%9F%A5%E9%94%81"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 单例模式 - 使用双重检查锁</span></a></li></ol></li></ol>
+        
+    </div>
+</aside>
+
+</header>
+
+        <div id="content" class="content">
+            <div id="wrapper" class="wrapper" style="max-width: 800px">
+                <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            并发场景下Map 初始化暴露的 NPE 问题
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://zjx1015288314.github.io/2024/11/08/%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8BMap-%E5%88%9D%E5%A7%8B%E5%8C%96%E6%9A%B4%E9%9C%B2%E7%9A%84-NPE-%E9%97%AE%E9%A2%98/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2024-11-08T09:38:08.000Z" itemprop="datePublished">2024-11-08</time>
+</a>
+
+            
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <h1 id="1-问题定位"><a href="#1-问题定位" class="headerlink" title="1. 问题定位"></a>1. 问题定位</h1><p>昨天发现日志里有报空指针的异常，定位到代码位置如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">xxxTest</span><span class="params">(Type type)</span> &#123;</span><br><span class="line">    <span class="type">IDemoService</span> <span class="variable">demoService</span> <span class="operator">=</span> demoBaseService.getDemoService(type);</span><br><span class="line">    <span class="comment">// 该行报空指针!!!!!!!!</span></span><br><span class="line">    <span class="keyword">return</span> demoService.fillXxxx();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>DemoBaseService相关代码如下:</p>
+<span id="more"></span>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DemoBaseService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Map&lt;Type, IDemoService&gt; demoServiceMap;</span><br><span class="line">  </span><br><span class="line">  	<span class="keyword">public</span> IDemoService <span class="title function_">getDemoService</span><span class="params">(Type type)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (demoServiceMap == <span class="literal">null</span>) &#123;</span><br><span class="line">            demoServiceMap = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;();</span><br><span class="line">            Map&lt;String, IDemoService&gt; beans = GkAppContext.getBeansOfType(IDemoService.class);</span><br><span class="line">            beans.forEach((name, bean) -&gt; &#123;</span><br><span class="line">                <span class="keyword">if</span> (!IDemoService.class.getSimpleName().equals(name)) &#123;</span><br><span class="line">                    bean.getTypes().forEach(type -&gt; demoServiceMap.put(type, bean));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> demoServiceMap.get(type);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// </span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">IDemoService</span> &#123;</span><br><span class="line">    Set&lt;Type&gt; <span class="title function_">getTypes</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">A</span> <span class="keyword">implements</span> <span class="title class_">IDemoService</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Set&lt;Type&gt; <span class="title function_">getTypes</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Sets.newHashSet(Type.A);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">B</span> <span class="keyword">implements</span> <span class="title class_">IDemoService</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Set&lt;Type&gt; <span class="title function_">getTypes</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Sets.newHashSet(Type.B);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一次分析代码后，感觉没有问题。并且在前端页面触发接口调用也没有问题，所以得出了错误结论。经过高手指点，发现是并发场景下延迟初始化引发的问题。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> IDemoService <span class="title function_">getDemoService</span><span class="params">(Type type)</span> &#123;</span><br><span class="line">  <span class="comment">// B 线程在这里</span></span><br><span class="line">  <span class="keyword">if</span> (demoServiceMap == <span class="literal">null</span>) &#123;</span><br><span class="line">    demoServiceMap = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;();</span><br><span class="line">    <span class="comment">// A 线程此时在这里</span></span><br><span class="line">    Map&lt;String, IDemoService&gt; beans = GkAppContext.getBeansOfType(IDemoService.class);</span><br><span class="line">    beans.forEach((name, bean) -&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (!IDemoService.class.getSimpleName().equals(name)) &#123;</span><br><span class="line">        bean.getTypes().forEach(type -&gt; demoServiceMap.put(type, bean));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> demoServiceMap.get(type);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>详细说就是getDemoService方法是在被调用的时候初始化 Map，但是如果两个线程同一时间调用这个方法，那么B 线程可能获取到一个不完整的 Map，导致 返回为 null，最后引发 NPE。</p>
+<h1 id="2-解决思路"><a href="#2-解决思路" class="headerlink" title="2. 解决思路"></a>2. 解决思路</h1><p>有两种，一种是保证Map初始化的时候使用单线程，另外一种是通过并发策略保证初始化的正确。</p>
+<h2 id="2-1-借助-Spring-自带的onApplicationEvent方法，Spring事件监听器默认是单线程同步执行，在onApplicationEvent方法里执行初始化逻辑即可"><a href="#2-1-借助-Spring-自带的onApplicationEvent方法，Spring事件监听器默认是单线程同步执行，在onApplicationEvent方法里执行初始化逻辑即可" class="headerlink" title="2.1 借助 Spring 自带的onApplicationEvent方法，Spring事件监听器默认是单线程同步执行，在onApplicationEvent方法里执行初始化逻辑即可"></a>2.1 借助 Spring 自带的<code>onApplicationEvent</code>方法，Spring事件监听器默认是单线程同步执行，在onApplicationEvent方法里执行初始化逻辑即可</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> cpublic <span class="keyword">class</span> <span class="title class_">DemoBaseService</span> <span class="keyword">implements</span> <span class="title class_">ApplicationListener</span>&lt;ContextRefreshedEvent&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Map&lt;Type, IDemoService&gt; demoServiceMap;</span><br><span class="line">  </span><br><span class="line">  	<span class="comment">// 单线程执行</span></span><br><span class="line">  	<span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onApplicationEvent</span><span class="params">(<span class="meta">@NotNull</span> ContextRefreshedEvent event)</span> &#123;</span><br><span class="line">        initAssetQuoteServiceMap();</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">initAssetQuoteServiceMap</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (demoServiceMap == <span class="literal">null</span>) &#123;</span><br><span class="line">            demoServiceMap = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;();</span><br><span class="line">            Map&lt;String, IDemoService&gt; beans = GkAppContext.getBeansOfType(IDemoService.class);</span><br><span class="line">            beans.forEach((name, bean) -&gt; &#123;</span><br><span class="line">                <span class="keyword">if</span> (!IDemoService.class.getSimpleName().equals(name)) &#123;</span><br><span class="line">                    bean.getTypes().forEach(type -&gt; demoServiceMap.put(type, bean));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> demoServiceMap.get(type);</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="keyword">public</span> IDemoService <span class="title function_">getDemoService</span><span class="params">(Type type)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> demoServiceMap.get(type);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-2-基于-2-1-的思路，使用-EventListener"><a href="#2-2-基于-2-1-的思路，使用-EventListener" class="headerlink" title="2.2 基于 2.1 的思路，使用@EventListener"></a>2.2 基于 2.1 的思路，使用<code>@EventListener</code></h2><p>Spring提供了<code>@EventListener</code>注解，可以表示该是一个事件监听器，方法的参数即监听的事件，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> cpublic <span class="keyword">class</span> <span class="title class_">DemoBaseService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Map&lt;Type, IDemoService&gt; demoServiceMap;</span><br><span class="line">  </span><br><span class="line">  	<span class="meta">@EventListener</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onApplicationEvent</span><span class="params">(<span class="meta">@NotNull</span> ContextRefreshedEvent event)</span> &#123;</span><br><span class="line">        initAssetQuoteServiceMap();</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">initAssetQuoteServiceMap</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (demoServiceMap == <span class="literal">null</span>) &#123;</span><br><span class="line">            demoServiceMap = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;();</span><br><span class="line">            Map&lt;String, IDemoService&gt; beans = GkAppContext.getBeansOfType(IDemoService.class);</span><br><span class="line">            beans.forEach((name, bean) -&gt; &#123;</span><br><span class="line">                <span class="keyword">if</span> (!IDemoService.class.getSimpleName().equals(name)) &#123;</span><br><span class="line">                    bean.getTypes().forEach(type -&gt; demoServiceMap.put(type, bean));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="keyword">public</span> IDemoService <span class="title function_">getDemoService</span><span class="params">(Type type)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> demoServiceMap.get(type);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-3-基于-2-1-的Getter-lazy-true-注解"><a href="#2-3-基于-2-1-的Getter-lazy-true-注解" class="headerlink" title="2.3 基于 2.1 的Getter(lazy&#x3D;true)注解"></a>2.3 基于 2.1 的Getter(lazy&#x3D;true)注解</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> cpublic <span class="keyword">class</span> <span class="title class_">DemoBaseService</span> &#123;</span><br><span class="line"></span><br><span class="line">  	<span class="meta">@Getter(lazy = true)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;Type, IDemoService&gt; demoServiceMap = initAssetQuoteServiceMap();</span><br><span class="line">  </span><br><span class="line">  	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">initAssetQuoteServiceMap</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (demoServiceMap == <span class="literal">null</span>) &#123;</span><br><span class="line">            demoServiceMap = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;();</span><br><span class="line">            Map&lt;String, IDemoService&gt; beans = GkAppContext.getBeansOfType(IDemoService.class);</span><br><span class="line">            beans.forEach((name, bean) -&gt; &#123;</span><br><span class="line">                <span class="keyword">if</span> (!IDemoService.class.getSimpleName().equals(name)) &#123;</span><br><span class="line">                    bean.getTypes().forEach(type -&gt; demoServiceMap.put(type, bean));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="keyword">public</span> IDemoService <span class="title function_">getDemoService</span><span class="params">(Type type)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> demoServiceMap.get(type);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>@Getter(lazy = true)</code> 使用了 <code>java.util.concurrent.atomic.AtomicReference</code> 来确保懒加载的线程安全性。即使多个线程同时调用 <code>getEnv()</code>， 也只会有一个线程执行 <code>initEnv()</code> 方法，其他线程会等待初始化完成后直接获取已初始化的值。</p>
+<h2 id="2-4-单例模式-使用双重检查锁"><a href="#2-4-单例模式-使用双重检查锁" class="headerlink" title="2.4 单例模式 - 使用双重检查锁"></a>2.4 单例模式 - 使用双重检查锁</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Singleton INSTANCE;  <span class="comment">// 将 INSTANCE 声明为 volatile 型</span></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span> &#123;&#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">    	<span class="keyword">if</span>(INSTANCE == <span class="literal">null</span>) &#123;</span><br><span class="line">        	<span class="keyword">synchronized</span> (Singleton.class) &#123;</span><br><span class="line">            	<span class="keyword">if</span>(INSTANCE == <span class="literal">null</span>) INSTANCE = <span class="keyword">new</span> <span class="title class_">Singleton</span>();</span><br><span class="line">        	&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> INSTANCE;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这个写法没有实践过, 但理论上是没问题的。<br>后续有新的想法的话，就在这里补充一下</p>
+
+        
+    </section>
+</article>
+
+
+
+<div class="comments">
+    <div id="comments"></div>
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+    new Gitalk({
+        clientID: "Ov23licN8No8iOgMl3uv",
+        clientSecret: "f8b3f3790f4cf706c60377cb18307339207a00d3",
+        repo: "zjx1015288314.github.io",
+        owner: "zjx1015288314",
+        admin: ["zjx1015288314"],
+        id: "a43bdfa023f8a11eba60dd2132fef18a",
+        distractionFreeMode: true,
+        title: "并发场景下Map 初始化暴露的 NPE 问题",
+        body: "https://zjx1015288314.github.io/2024/11/08/%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8BMap-%E5%88%9D%E5%A7%8B%E5%8C%96%E6%9A%B4%E9%9C%B2%E7%9A%84-NPE-%E9%97%AE%E9%A2%98/",
+        labels: []
+    }).render('comments');
+    </script>
+</div>
+
+
+
+            </div>
+        </div>
+
+        
+            
+            <a id="pagenext" href="/2024/08/21/hello-world/" class="article-next" title="Hello World"><i class="icon-arrow-right"></i></a>
+            
+            
+        
+
+        <footer class="footer">
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>, Theme by <a href="https://github.com/sanonz/hexo-theme-concise" target="_blank">Concise</a>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?c6f3e57dde9f7bb4a0b3e80a88140ffa";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+</footer>
+
+    </main>
+
+    <script type="text/javascript" src="https://unpkg.com/jquery@1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var nodes = {
+            nav: $('#nav'),
+            aside: $('#aside'),
+            asideInner: $('#aside-inner'),
+            navInner: $('#nav-inner')
+        };
+
+        var doing = false;
+        nodes.asideInner.on('webkitAnimationEnd mozAnimationEnd oAnimationEnd oanimationend animationend', function() {
+            if (nodes.aside.hasClass('mobile-open')) {
+                nodes.aside.removeClass('mobile-open');
+            } else {
+                nodes.aside.removeClass('mobile-close panel-show');
+            }
+            doing = false;
+        });
+        $('#open-panel, #aside-mask').on('click', function() {
+            if (doing) {
+                return;
+            }
+
+            if (nodes.aside.hasClass('panel-show')) {
+                nodes.aside.addClass('mobile-close');
+            } else {
+                nodes.aside.addClass('mobile-open panel-show');
+            }
+        });
+        $('#open-menus').on('click', function() {
+            nodes.navInner.slideToggle('normal', slideDone);
+        });
+
+        if (window.innerWidth <= 960) {
+            setTimeout(function() {
+                nodes.navInner.slideUp('normal', slideDone);
+            }, 3000);
+        }
+
+        function slideDone() {
+            if (nodes.navInner.css('display') !== 'none') {
+                nodes.navInner.css('display', '');
+            }
+        }
+
+        $(window).on('resize', function() {
+            if ($(this).width() > 960) {
+                nodes.navInner.css('display', '');
+            }
+        });
+    });
+    </script>
+    
+        
+<script src="/js/scrollspy.min.js"></script>
+
+        <script type="text/javascript">
+        $(document.body).scrollspy({target: '#aside-inner'});
+
+        $(window).on('resize', function() {
+            var hw = $('#header').width();
+            var ww = $('#wrapper').width();
+            var space = ($(this).width() - hw - ww) / 2 / 2;
+
+            var pageprev = $('#pageprev');
+            var pagenext = $('#pagenext');
+            var avg = (pageprev.width() + pagenext.width()) / 2
+
+            if(space > avg) {
+                var len = space - avg / 2;
+                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
+                pageprev.css($.extend({left: hw + len}, styles));
+                pagenext.css($.extend({right: len}, styles));
+            } else {
+                pageprev.removeAttr('style');
+                pagenext.removeAttr('style');
+            }
+        }).trigger('resize');
+        </script>
+    
+
+</body>
+</html>
