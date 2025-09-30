@@ -171,55 +171,6 @@
     <header class="article-header">
         
         <h1 itemprop="name">
-            <a href="/2024/11/01/hello-world/">Hello World</a>
-        </h1>
-        
-        <div class="article-meta clearfix">
-            <a class="article-date" href="https://zjx1015288314.github.io/categories/back-end/index.html">
-    
-    <i class="icon-calendar vm"></i>
-    
-    <time class="vm" datetime="2024-11-01T07:49:02.000Z" itemprop="datePublished">2024-11-01</time>
-</a>
-
-            
-
-        </div>
-    </header>
-    
-    <section class="article-body markdown-body">
-        
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-        
-        <p class="article-more-link">
-            <a href="/2024/11/01/hello-world/#more">
-                <span class="vm">阅读更多</span>
-                <i class="icon-arrow-double-right vm"></i>    
-            </a>
-        </p>
-        
-        
-    </section>
-</article>
-
-
-    <article class="article" itemscope itemprop="blogPost">
-    
-    <header class="article-header">
-        
-        <h1 itemprop="name">
             <a href="/2024/05/28/feign-client%E8%B8%A9%E5%9D%91/">Feign Client踩坑日记</a>
         </h1>
         
@@ -243,15 +194,18 @@
     
     <section class="article-body markdown-body">
         
-        <p>A项目远程调用另一项目时是用http方式进行请求的，使用的工具是FeignClient, 以下是FeignClient的踩坑日记</p>
-<p>1.在服务的启动入口，即main方法所在的类上需要加一个<code>EnableFeignClients</code>注解，并且如果需要扫描的包不在该类所属的同一包下，需要加上basePackages，否则可能会生成一个代理对象,并且报错</p>
+        <p>A项目远程调用另一项目时是用http方式进行请求的，使用的工具是FeignClient, 以下是FeignClient的踩坑日记<br>1.在服务的启动入口，即main方法所在的类上需要加一个<code>EnableFeignClients</code>注解，并且如果需要扫描的包不在该类所属的同一包下，需要加上basePackages，否则可能会生成一个代理对象,并且报错</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Invalid bound statement (not found): xxx.common.xx.xx.xxXClient.getXxxList</span><br></pre></td></tr></table></figure>
 <p>解决方法如下:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@EnableFeignClients(basePackages = &#123;&quot;test.common&quot;&#125;)</span><br><span class="line">public class Main &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        SpringApplication application = new SpringApplication(Main.class);</span><br><span class="line">        application.setBannerMode(Banner.Mode.OFF);</span><br><span class="line">        application.run(args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>2.xxClient接口下的方法的响应需要加上<code>@NoArgsConstructor</code> 注解( 或者高版本可以用<code>@Jacksonized</code>), 否则会导致反序列化失败</p>
-<p>3.调试技巧，xxClient接口下的方法如果获取不到响应或者不是预期响应，可以先用Object作为方法的返回值。观察返回信息。举例：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 修改前如下</span></span><br><span class="line"><span class="meta">@PostMapping(&quot;/v1/admin/push_task/add&quot;)</span></span><br><span class="line">ApiResponse <span class="title function_">createPushTask</span><span class="params">(<span class="meta">@RequestBody</span> <span class="meta">@Validated</span> ApiRequest requestBody)</span>;</span><br><span class="line"><span class="comment">// 经过Object分析，发现接收到的响应只剩CreatePushTaskResData，</span></span><br><span class="line"><span class="comment">// 最外层ApiReponse不知道在哪里被剥离出去了。修改后如下:</span></span><br><span class="line"><span class="meta">@PostMapping(&quot;/v1/admin/push_task/add&quot;)</span></span><br><span class="line">CreatePushTaskResData <span class="title function_">createPushTask</span><span class="params">(<span class="meta">@RequestBody</span> <span class="meta">@Validated</span> ApiRequest requestBody)</span>;</span><br></pre></td></tr></table></figure>
+        
+        <p class="article-more-link">
+            <a href="/2024/05/28/feign-client%E8%B8%A9%E5%9D%91/#more">
+                <span class="vm">阅读更多</span>
+                <i class="icon-arrow-double-right vm"></i>    
+            </a>
+        </p>
+        
         
     </section>
 </article>
@@ -290,32 +244,63 @@
 <p>项目中使用的Json工具是Jackson，以该工具为例</p>
 </blockquote>
 <h2 id="1-实体类定义"><a href="#1-实体类定义" class="headerlink" title="1. 实体类定义"></a>1. 实体类定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Transaction</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Schema(description = &quot;Transaction ID&quot;)</span></span><br><span class="line">    <span class="meta">@TableId(value = &quot;id&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Schema(description = &quot;交易类型&quot;)</span></span><br><span class="line">    <span class="meta">@JsonAlias(&#123;&quot;transaction_type&quot;, &quot;type&quot;&#125;)</span></span><br><span class="line">    <span class="keyword">private</span> TransactionType type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="2-枚举类定义"><a href="#2-枚举类定义" class="headerlink" title="2. 枚举类定义"></a>2. 枚举类定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> <span class="title class_">TransactionType</span> &#123;</span><br><span class="line">  BUY(<span class="number">1</span>, <span class="string">&quot;Buy&quot;</span>),</span><br><span class="line">  SELL(<span class="number">2</span>, <span class="string">&quot;Sell&quot;</span>),</span><br><span class="line">  ;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> code;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> String desc;</span><br><span class="line"></span><br><span class="line">  TransactionType(<span class="type">int</span> code, String desc) &#123;</span><br><span class="line">    <span class="built_in">this</span>.code = code;</span><br><span class="line">    <span class="built_in">this</span>.desc = desc;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
-<h2 id="3-数据库定义"><a href="#3-数据库定义" class="headerlink" title="3. 数据库定义"></a>3. 数据库定义</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> t_transaction</span><br><span class="line">(</span><br><span class="line">    id               <span class="type">bigint</span>   <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT COMMENT <span class="string">&#x27;Transaction ID&#x27;</span>,</span><br><span class="line">    type             <span class="type">smallint</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;交易类型&#x27;</span>,</span><br><span class="line">    <span class="keyword">PRIMARY</span> KEY (id)</span><br><span class="line">) ENGINE <span class="operator">=</span> InnoDB <span class="keyword">DEFAULT</span> CHARSET <span class="operator">=</span> utf8mb4 COMMENT <span class="operator">=</span><span class="string">&#x27;交易记录表&#x27;</span>;</span><br></pre></td></tr></table></figure>
-<h2 id="4-场景"><a href="#4-场景" class="headerlink" title="4. 场景"></a>4. 场景</h2><h3 id="4-1-实体类与数据库之间的映射处理"><a href="#4-1-实体类与数据库之间的映射处理" class="headerlink" title="4.1 实体类与数据库之间的映射处理"></a>4.1 实体类与数据库之间的映射处理</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> <span class="title class_">TransactionType</span> &#123;</span><br><span class="line">    BUY(<span class="number">1</span>, <span class="string">&quot;Buy&quot;</span>),</span><br><span class="line">    SELL(<span class="number">2</span>, <span class="string">&quot;Sell&quot;</span>),</span><br><span class="line">    ;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@EnumValue</span> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> code;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String desc;</span><br><span class="line"></span><br><span class="line">    TransactionType(<span class="type">int</span> code, String desc) &#123;</span><br><span class="line">      <span class="built_in">this</span>.code = code;</span><br><span class="line">      <span class="built_in">this</span>.desc = desc;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
-<p>@EnumValue 是 MyBatis-Plus 提供的一个注解，用于标记枚举类中的某个字段作为在数据库中存储的值。 在这个例子中，code 字段被标记为 @EnumValue，这意味着当你在数据库中存储 TransactionType 枚举时，会存储 code 字段的值。例如，如果你有一个 TransactionType 类型的字段，并且它的值是 TransactionType.BUT，那么在数据库中存储的值将是 1。 同样，当从数据库中读取这个字段的值时，MyBatis-Plus 会使用 code 字段的值来查找对应的枚举实例。例如，如果数据库中的值是 1，那么 MyBatis-Plus 会将其转换为 TransactionType.BUY。</p>
-<h3 id="4-2-接口响应类中的枚举"><a href="#4-2-接口响应类中的枚举" class="headerlink" title="4.2 接口响应类中的枚举"></a>4.2 接口响应类中的枚举</h3><p>接口响应类中的枚举时如果不作任何处理，则调用<code>.name()</code>来序列化。</p>
-<blockquote>
-<p>枚举序列化方式</p>
-<ol>
-<li>全局配置调用<code>.name()</code>序列化为字符串（默认）</li>
-<li>全局配置调用<code>.toString()</code>序列化为字符串</li>
-<li>全局配置调用<code>.ordinal()</code>序列化为数字</li>
-<li>全局配置调用<code>.ordinal()</code>序列化为数字</li>
-<li>通过注解自定义序列化，如：<code>@JsonValue</code>指定序列化的属性</li>
-</ol>
-<p>通过<code>.ordinal()</code>获得枚举常量索引进行序列化是最不推荐的方式，因为它是按照常量在枚举里定义的顺序从上到下从 0 开始计数的，在代码重构及演进过程中，很可能不小心改变了顺序，这样会造成序列化值的错乱并失去兼容性！</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 接口响应示例如下:</span><br><span class="line">&quot;data&quot;: &#123;</span><br><span class="line">    &quot;transaction&quot;: &#123;</span><br><span class="line">      &quot;id&quot;: 1,</span><br><span class="line">      &quot;type&quot;: &quot;BUY&quot;,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>但是，前端有时候不需要字符串类型的type, 只需要<code>type</code>对应的<code>code</code>值，或者枚举类。这时候就需要用到额外的注解。</p>
-<h4 id="4-2-1-JsonValue注解指定序列化属性，接口响应返回code值"><a href="#4-2-1-JsonValue注解指定序列化属性，接口响应返回code值" class="headerlink" title="4.2.1 @JsonValue注解指定序列化属性，接口响应返回code值"></a>4.2.1 <code>@JsonValue</code>注解指定序列化属性，接口响应返回<code>code</code>值</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> <span class="title class_">TransactionType</span> &#123;</span><br><span class="line">    BUY(<span class="number">1</span>, <span class="string">&quot;Buy&quot;</span>),</span><br><span class="line">    SELL(<span class="number">2</span>, <span class="string">&quot;Sell&quot;</span>),</span><br><span class="line">    ;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@EnumValue</span> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> code;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String desc;</span><br><span class="line"></span><br><span class="line">    TransactionType(<span class="type">int</span> code, String desc) &#123;</span><br><span class="line">      <span class="built_in">this</span>.code = code;</span><br><span class="line">      <span class="built_in">this</span>.desc = desc;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JsonValue</span></span><br><span class="line">    <span class="keyword">public</span> Integer <span class="title function_">getCode</span><span class="params">()</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  &#125;  </span><br></pre></td></tr></table></figure>
+        
+        <p class="article-more-link">
+            <a href="/2024/04/16/java%E4%B8%AD%E6%9E%9A%E4%B8%BE%E7%B1%BB%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/#more">
+                <span class="vm">阅读更多</span>
+                <i class="icon-arrow-double-right vm"></i>    
+            </a>
+        </p>
+        
+        
+    </section>
+</article>
 
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 接口响应示例如下:</span><br><span class="line">&quot;data&quot;: &#123;</span><br><span class="line">  &quot;transaction&quot;: &#123;</span><br><span class="line">    &quot;id&quot;: 1,</span><br><span class="line">    &quot;type&quot;: 1,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h4 id="4-2-2-JsonFormat-shape-JsonFormat-Shape-OBJECT-注解也可以指定序列化方式，该注解使得枚举类被序列化为Json对象。但是该注解优先级低于-JsonValue"><a href="#4-2-2-JsonFormat-shape-JsonFormat-Shape-OBJECT-注解也可以指定序列化方式，该注解使得枚举类被序列化为Json对象。但是该注解优先级低于-JsonValue" class="headerlink" title="4.2.2 @JsonFormat(shape = JsonFormat.Shape.*OBJECT*)注解也可以指定序列化方式，该注解使得枚举类被序列化为Json对象。但是该注解优先级低于@JsonValue"></a>4.2.2 <code>@JsonFormat(shape = JsonFormat.Shape.*OBJECT*)</code>注解也可以指定序列化方式，该注解使得枚举类被序列化为Json对象。但是该注解优先级低于<code>@JsonValue</code></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@JsonFormat(shape = JsonFormat.Shape.OBJECT)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> <span class="title class_">TransactionType</span> &#123;</span><br><span class="line">    BUY(<span class="number">1</span>, <span class="string">&quot;Buy&quot;</span>),</span><br><span class="line">    SELL(<span class="number">2</span>, <span class="string">&quot;Sell&quot;</span>),</span><br><span class="line">    ;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@EnumValue</span> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> code;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String desc;</span><br><span class="line"></span><br><span class="line">    TransactionType(<span class="type">int</span> code, String desc) &#123;</span><br><span class="line">      <span class="built_in">this</span>.code = code;</span><br><span class="line">      <span class="built_in">this</span>.desc = desc;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  &#125;  </span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 接口响应示例如下:</span><br><span class="line">&quot;data&quot;: &#123;</span><br><span class="line">  &quot;transaction&quot;: &#123;</span><br><span class="line">    &quot;id&quot;: 1,</span><br><span class="line">    &quot;type&quot;: &#123;</span><br><span class="line">      &quot;code&quot;: 1,</span><br><span class="line">      &quot;desc&quot;: &quot;Buy&quot;</span><br><span class="line">     &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="4-3-枚举类中的反序列化"><a href="#4-3-枚举类中的反序列化" class="headerlink" title="4.3 枚举类中的反序列化"></a>4.3 枚举类中的反序列化</h4><p>有时前端会传枚举类的code值（或者Json对象）到接口，后端需要根据code值查到枚举类，这里需要<code>@JsonCreator</code>。Jackson 库可以通过默认的构造函数来创建对象实例，然后通过反射来设置对象的属性。但是，如果对象的构造函数不是默认的或者带有参数，Jackson 就无法直接使用默认的方式来创建对象实例了。<code>@JsonCreator</code> 的作用就是告诉 Jackson 序列化&#x2F;反序列化时，应该使用标记了该注解的构造函数或者静态工厂方法来创建对象实例。通常情况下，<code>@JsonCreator</code> 注解会和 <code>@JsonProperty</code> 注解一起使用，<code>@JsonProperty</code> 用来标识 JSON 中的属性名，<code>@JsonCreator</code> 用来标识构造函数或静态工厂方法，以便正确地将 JSON 数据映射到 Java 对象的属性上。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@JsonFormat(shape = JsonFormat.Shape.OBJECT)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> <span class="title class_">TransactionType</span> &#123;</span><br><span class="line">    BUY(<span class="number">1</span>, <span class="string">&quot;Buy&quot;</span>),</span><br><span class="line">    SELL(<span class="number">2</span>, <span class="string">&quot;Sell&quot;</span>),</span><br><span class="line">    ;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@EnumValue</span> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> code;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String desc;</span><br><span class="line">    </span><br><span class="line">    TransactionType(<span class="type">int</span> code, String desc) &#123;</span><br><span class="line">      <span class="built_in">this</span>.code = code;</span><br><span class="line">      <span class="built_in">this</span>.desc = desc;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Map</span> <span class="variable">ALL_TRANSACTION_TYPE</span> <span class="operator">=</span> Stream.of(TransactionType.values())</span><br><span class="line">      .collect(Collectors.toMap(TransactionType::getCode, Function.identity()));</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@JsonCreator</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> TransactionType <span class="title function_">des</span><span class="params">(<span class="keyword">final</span> JsonNode node)</span> &#123;</span><br><span class="line">          <span class="keyword">return</span> Optional.ofNullable(node.get(<span class="string">&quot;code&quot;</span>))  <span class="comment">// Json对象取code值</span></span><br><span class="line">                  .or(() -&gt; Optional.of(node))        <span class="comment">// 或者直接用code值 </span></span><br><span class="line">                  .map(JsonNode::asInt)</span><br><span class="line">                  .map(ALL_TRANSACTION_TYPE::get)</span><br><span class="line">                  .orElseThrow(() -&gt; <span class="keyword">new</span> <span class="title class_">GkException</span>(GkError.TRANSACTION_TYPE_ERROR));</span><br><span class="line">      &#125;</span><br><span class="line">    </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+    <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            <a href="/2023/01/01/hello-world/">Hello World</a>
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://zjx1015288314.github.io/categories/back-end/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2023-01-01T07:49:02.000Z" itemprop="datePublished">2023-01-01</time>
+</a>
+
+            
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+        
+        <p class="article-more-link">
+            <a href="/2023/01/01/hello-world/#more">
+                <span class="vm">阅读更多</span>
+                <i class="icon-arrow-double-right vm"></i>    
+            </a>
+        </p>
+        
         
     </section>
 </article>
