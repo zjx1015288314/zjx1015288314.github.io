@@ -7,7 +7,7 @@
 
     
 
-    <title>Category: 提效工具 | Hexo</title>
+    <title>Category: front-end | Hexo</title>
     <meta name="author" content="John Doe" />
     <meta name="keywords" content="" />
     <meta name="description" content="" />
@@ -56,7 +56,7 @@
                 <span class="nav-text">首页</span>
             </a>
         
-            <a class="nav-item" href="/categories/front-end">
+            <a class="nav-item active" href="/categories/front-end">
                 <span class="nav-text">工具</span>
             </a>
         
@@ -136,7 +136,7 @@
         </h1>
         
         <div class="article-meta clearfix">
-            <a class="article-date" href="https://zjx1015288314.github.io/categories/%E6%8F%90%E6%95%88%E5%B7%A5%E5%85%B7/index.html">
+            <a class="article-date" href="https://zjx1015288314.github.io/categories/front-end/index.html">
     
     <i class="icon-calendar vm"></i>
     
@@ -254,7 +254,7 @@
         </h1>
         
         <div class="article-meta clearfix">
-            <a class="article-date" href="https://zjx1015288314.github.io/categories/%E6%8F%90%E6%95%88%E5%B7%A5%E5%85%B7/index.html">
+            <a class="article-date" href="https://zjx1015288314.github.io/categories/front-end/index.html">
     
     <i class="icon-calendar vm"></i>
     
@@ -299,7 +299,7 @@
         </h1>
         
         <div class="article-meta clearfix">
-            <a class="article-date" href="https://zjx1015288314.github.io/categories/%E6%8F%90%E6%95%88%E5%B7%A5%E5%85%B7/index.html">
+            <a class="article-date" href="https://zjx1015288314.github.io/categories/front-end/index.html">
     
     <i class="icon-calendar vm"></i>
     
@@ -326,6 +326,53 @@
 <h2 id="3-创建cache缓存kv"><a href="#3-创建cache缓存kv" class="headerlink" title="3. 创建cache缓存kv"></a>3. 创建cache缓存kv</h2><p>在克隆好的项目目录下执行 <code>npx wrangler kv:namespace create hammal_cache</code> 来创建缓存 kv，记录下来输出的 id，填写到 <code>wrangler.toml</code> 文件中 <img src="https://picgo.aihi.uk/blog/2024/07/d3e498c6a1f25137aa8d4f321dc15b2d.png" alt="image"> <img src="https://picgo.aihi.uk/blog/2024/07/0460c2668d5d1b379649ff82a91f8ab5.png" alt="image"></p>
 <h2 id="4-Deploy"><a href="#4-Deploy" class="headerlink" title="4. Deploy"></a>4. Deploy</h2><p>在克隆好的项目目录下执行 <code>pnpm run deploy</code> 来部署项目 <img src="https://picgo.aihi.uk/blog/2024/07/ddbf276a7374c630398e8040e9b02832.png" alt="image"> 进入你的 Workers 脚本的 dashboard，为它绑定一个自定义域名（必要，因为默认的 <code>workers.dev</code> 域名被墙了） <img src="https://picgo.aihi.uk/blog/2024/07/01f3f7628560210e43c41c8035d334ce.png" alt="image"></p>
 </blockquote>
+
+        
+    </section>
+</article>
+
+
+    <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            <a href="/2024/04/18/2024-04-01-idea-%E7%A0%B4%E8%A7%A3/">2024.04.01 IDEA 破解</a>
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://zjx1015288314.github.io/categories/front-end/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2024-04-18T07:37:12.000Z" itemprop="datePublished">2024-04-18</time>
+</a>
+
+            
+<div class="article-tag-list">
+    <i class="icon-tag vm"></i>
+    <a class="article-tag-link" href="/tags/IDEA/" rel="tag">IDEA</a>, <a class="article-tag-link" href="/tags/Java/" rel="tag">Java</a>, <a class="article-tag-link" href="/tags/%E7%A0%B4%E8%A7%A3/" rel="tag">破解</a>
+</div>
+
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <p>对于软件 <a target="_blank" rel="noopener" href="https://www.jetbrains.com/idea/">IntelliJ IDEA</a> 的使用者, 不定时有一些pojie的需求。这里做一个简单记录，资源来自大佬<br>有需要的伙伴可以阅读<a target="_blank" rel="noopener" href="https://zhile.io/2021/11/29/ja-netfilter-javaagent-lib.html">原文</a>，这里只介绍基础说明。</p>
+<ol>
+<li>访问以下链接：<a target="_blank" rel="noopener" href="https://3.jetbra.in/">https://3.jetbra.in/</a></li>
+<li>点击任一在线资源 <img src="http://blog.aihi.uk/wp-content/uploads/2024/04/image_1713413473763_0-300x88.png" alt="image"></li>
+<li>点击下载jetbra.zip 文件 <img src="http://blog.aihi.uk/wp-content/uploads/2024/04/image_1713413538153_0-300x48.png" alt="image"></li>
+<li>将步骤3中文件移动到一个不会轻易删除的目录下（可选）。解压缩文件，会看到一个<code>ja-netfilter.jar</code>文件</li>
+<li>打开IDEA, 找到<code>help</code>导航栏下的<code>Edit Custom VM Options...</code>点击打开 <img src="http://blog.aihi.uk/wp-content/uploads/2024/04/image_1713413805997_0-172x300.png" alt="image"></li>
+<li>在文件末尾增加一行, &#x2F;Xxx根据自己的实际情况填写，就是步骤4的jar文件的绝对路径 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-javaagent:/Xxx/jetbra/ja-netfilter.jar=jetbrains </span><br></pre></td></tr></table></figure></li>
+<li>如果IDEA使用的Java 版本是17以上，则在该文件末尾增加两行<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">--add-opens=java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED</span><br><span class="line">--add-opens=java.base/jdk.internal.org.objectweb.asm.tree=ALL-UNNAMED</span><br></pre></td></tr></table></figure></li>
+<li>保存并退出IDEA</li>
+<li>找到步骤2中的链接，点击复制code <img src="http://blog.aihi.uk/wp-content/uploads/2024/04/image_1713414792401_0-300x81.png" alt="image"></li>
+<li>点击<code>help</code> 导航栏下的 <code>register</code> ，将上步<code>code</code> 复制到 <code>Active Code</code> 框中，验证是否有效。如果有效，则激活成功。否则，从步骤2的其余资源处复制code。如果还不成功，则有可能是.jar文件有问题，暂时无法解决</li>
+</ol>
 
         
     </section>
