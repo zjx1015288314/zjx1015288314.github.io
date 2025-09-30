@@ -132,7 +132,7 @@
     <header class="article-header">
         
         <h1 itemprop="name">
-            <a href="/2024/11/08/%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8BMap-%E5%88%9D%E5%A7%8B%E5%8C%96%E6%9A%B4%E9%9C%B2%E7%9A%84-NPE-%E9%97%AE%E9%A2%98/">并发场景下Map 初始化暴露的 NPE 问题</a>
+            <a href="/2025/09/30/hello-world/">Hello World</a>
         </h1>
         
         <div class="article-meta clearfix">
@@ -140,46 +140,7 @@
     
     <i class="icon-calendar vm"></i>
     
-    <time class="vm" datetime="2024-11-08T09:38:08.000Z" itemprop="datePublished">2024-11-08</time>
-</a>
-
-            
-
-        </div>
-    </header>
-    
-    <section class="article-body markdown-body">
-        
-        <h1 id="1-问题定位"><a href="#1-问题定位" class="headerlink" title="1. 问题定位"></a>1. 问题定位</h1><p>昨天发现日志里有报空指针的异常，定位到代码位置如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">xxxTest</span><span class="params">(Type type)</span> &#123;</span><br><span class="line">    <span class="type">IDemoService</span> <span class="variable">demoService</span> <span class="operator">=</span> demoBaseService.getDemoService(type);</span><br><span class="line">    <span class="comment">// 该行报空指针!!!!!!!!</span></span><br><span class="line">    <span class="keyword">return</span> demoService.fillXxxx();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>DemoBaseService相关代码如下:</p>
-        
-        <p class="article-more-link">
-            <a href="/2024/11/08/%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8BMap-%E5%88%9D%E5%A7%8B%E5%8C%96%E6%9A%B4%E9%9C%B2%E7%9A%84-NPE-%E9%97%AE%E9%A2%98/#more">
-                <span class="vm">阅读更多</span>
-                <i class="icon-arrow-double-right vm"></i>    
-            </a>
-        </p>
-        
-        
-    </section>
-</article>
-
-
-    <article class="article" itemscope itemprop="blogPost">
-    
-    <header class="article-header">
-        
-        <h1 itemprop="name">
-            <a href="/2024/08/21/hello-world/">Hello World</a>
-        </h1>
-        
-        <div class="article-meta clearfix">
-            <a class="article-date" href="https://zjx1015288314.github.io/index.html">
-    
-    <i class="icon-calendar vm"></i>
-    
-    <time class="vm" datetime="2024-08-21T04:42:08.078Z" itemprop="datePublished">2024-08-21</time>
+    <time class="vm" datetime="2025-09-30T02:57:18.063Z" itemprop="datePublished">2025-09-30</time>
 </a>
 
             
@@ -204,7 +165,46 @@
 <p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
         
         <p class="article-more-link">
-            <a href="/2024/08/21/hello-world/#more">
+            <a href="/2025/09/30/hello-world/#more">
+                <span class="vm">阅读更多</span>
+                <i class="icon-arrow-double-right vm"></i>    
+            </a>
+        </p>
+        
+        
+    </section>
+</article>
+
+
+    <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            <a href="/2024/11/08/%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8BMap-%E5%88%9D%E5%A7%8B%E5%8C%96%E6%9A%B4%E9%9C%B2%E7%9A%84-NPE-%E9%97%AE%E9%A2%98/">并发场景下Map 初始化暴露的 NPE 问题</a>
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://zjx1015288314.github.io/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2024-11-08T09:38:08.000Z" itemprop="datePublished">2024-11-08</time>
+</a>
+
+            
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <h1 id="1-问题定位"><a href="#1-问题定位" class="headerlink" title="1. 问题定位"></a>1. 问题定位</h1><p>昨天发现日志里有报空指针的异常，定位到代码位置如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">xxxTest</span><span class="params">(Type type)</span> &#123;</span><br><span class="line">    <span class="type">IDemoService</span> <span class="variable">demoService</span> <span class="operator">=</span> demoBaseService.getDemoService(type);</span><br><span class="line">    <span class="comment">// 该行报空指针!!!!!!!!</span></span><br><span class="line">    <span class="keyword">return</span> demoService.fillXxxx();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>DemoBaseService相关代码如下:</p>
+        
+        <p class="article-more-link">
+            <a href="/2024/11/08/%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8BMap-%E5%88%9D%E5%A7%8B%E5%8C%96%E6%9A%B4%E9%9C%B2%E7%9A%84-NPE-%E9%97%AE%E9%A2%98/#more">
                 <span class="vm">阅读更多</span>
                 <i class="icon-arrow-double-right vm"></i>    
             </a>
